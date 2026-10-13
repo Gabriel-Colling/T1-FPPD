@@ -4,12 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"sync"
+	"time"
 )
+
+type Metricas struct {
+	Refeicoes   int
+	TempoEspera time.Duration
+}
 
 func filosofoHierarquico(
 	id int,
 	R int,
 	garfos []chan struct{},
+	metricas []Metricas,
 	wg *sync.WaitGroup,
 ) {
 	defer wg.Done()
@@ -21,6 +28,8 @@ func filosofoHierarquico(
 
 	for i := 0; i < R; i++ {
 		fmt.Printf("Filósofo %d está pensando\n", id)
+
+		inicio := time.Now()
 
 		if id < (id+1)%N {
 			<-esquerdo
@@ -34,7 +43,10 @@ func filosofoHierarquico(
 			fmt.Printf("Filósofo %d pegou o garfo esquerdo\n", id)
 		}
 
+		metricas[id].TempoEspera += time.Since(inicio)
 		fmt.Printf("Filósofo %d está comendo\n", id)
+
+		metricas[id].Refeicoes++
 
 		// Devolve os garfos
 		esquerdo <- struct{}{}
@@ -58,11 +70,23 @@ func main() {
 		garfos[i] <- struct{}{}
 	}
 
+	metricas := make([]Metricas, *N)
+
 	var wg sync.WaitGroup
 	for i := 0; i < *N; i++ {
 		wg.Add(1)
-		go filosofoHierarquico(i, *R, garfos, &wg)
+		go filosofoHierarquico(i, *R, garfos, metricas, &wg)
 	}
 
 	wg.Wait()
+	fmt.Println("\n=== RESULTADOS DA HIERARQUIA ===")
+
+	for i, m := range metricas {
+		media := m.TempoEspera.Seconds() * 1000 / float64(m.Refeicoes)
+
+		fmt.Printf(
+			"Filósofo %d: %d refeições | Espera média: %.3f ms\n",
+			i, m.Refeicoes, media,
+		)
+	}
 }
