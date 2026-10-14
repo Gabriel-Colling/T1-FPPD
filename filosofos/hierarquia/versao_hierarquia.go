@@ -28,7 +28,7 @@ func filosofoHierarquico(
 
 	for i := 0; i < R; i++ {
 		fmt.Printf("Filósofo %d está pensando\n", id)
-
+		time.Sleep(200 * time.Millisecond)
 		inicio := time.Now()
 
 		if id < (id+1)%N {
@@ -36,6 +36,7 @@ func filosofoHierarquico(
 			fmt.Printf("Filósofo %d pegou o garfo esquerdo\n", id)
 			<-direito
 			fmt.Printf("Filósofo %d pegou o garfo direito\n", id)
+
 		} else {
 			<-direito
 			fmt.Printf("Filósofo %d pegou o garfo direito\n", id)
@@ -45,10 +46,11 @@ func filosofoHierarquico(
 
 		metricas[id].TempoEspera += time.Since(inicio)
 		fmt.Printf("Filósofo %d está comendo\n", id)
-
+		time.Sleep(200 * time.Millisecond)
+		// incrementa o número de refeições
 		metricas[id].Refeicoes++
 
-		// Devolve os garfos
+		// devolve os garfos
 		esquerdo <- struct{}{}
 		direito <- struct{}{}
 	}

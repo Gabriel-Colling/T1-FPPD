@@ -39,7 +39,7 @@ func filosofo(
 
 		inicioGarfos := time.Now()
 
-		// Pega o garfo esquerdo
+		// pega o garfo esquerdo
 		<-esquerdo
 		fmt.Printf("Filósofo %d pegou o garfo esquerdo\n", id)
 
@@ -67,12 +67,12 @@ func main() {
 	R := flag.Int("r", 3, "Número de refeições")
 	flag.Parse()
 
-	metricas := make([]Metricas, *N)
-
 	if *N < 2 || *R < 1 {
 		fmt.Println("N deve ser >= 2 e R >= 1")
 		return
 	}
+
+	metricas := make([]Metricas, *N)
 
 	garfos := make([]chan struct{}, *N)
 	permissao := make(chan struct{}, *N-1)

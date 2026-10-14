@@ -56,13 +56,9 @@ func executarTesteChannel(K, P, C, ItensPorP int) Resultado {
 			}
 		}
 	}()
-	// ------------------------------------------
 
 	inicio := time.Now()
 
-	// =========================================================================
-	// ⬇️ INÍCIO DA LÓGICA ORIGINAL (PRODUTOR/CONSUMIDOR COM CHANNELS) ⬇️
-	// =========================================================================
 	var wgProdutores sync.WaitGroup
 	var wgConsumidores sync.WaitGroup
 
@@ -118,10 +114,6 @@ func executarTesteChannel(K, P, C, ItensPorP int) Resultado {
 	if totalConsumido != totalItens {
 		panic("Erro: quantidade produzida diferente da consumida")
 	}
-
-	// =========================================================================
-	// ⬆️ FIM DA LÓGICA ORIGINAL ⬆️
-	// =========================================================================
 
 	fim := time.Now()
 	tempoTotal := fim.Sub(inicio)
